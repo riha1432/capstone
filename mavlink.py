@@ -50,3 +50,4 @@ while(1):
     re = mavlin.recv_match(type = 'GPS_RAW_INT')
     print(re)
     time.sleep(0.1)
+    #asd
