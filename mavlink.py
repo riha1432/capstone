@@ -2,7 +2,11 @@ from pymavlink import mavutil
 from pymavlink.dialects.v20 import ardupilotmega
 from pymavlink.dialects.v20 import common
 import time
-
+mavlin = mavutil.mavlink_connection('tcp:localhost:5763')
+# mav_com = common.MAVLink()
+mavlin.wait_heartbeat()
+mavlin.mav.request_data_stream_send(mavlin.target_system, mavlin.target_component,
+                                        mavutil.mavlink.MAV_DATA_STREAM_ALL, 5, 1)
 
 # print('hear sys : %u comp : %u'%(mavlin.target_system, mavlin.target_component))
 
@@ -42,14 +46,7 @@ import time
 # time.sleep(20)
 # mavlin.set_mode_apm(9, 1, 1)
 
-def main():
-    mvk = mavutil.mavlink_connection('tcp:localhost:5763')
-    mvk.wait_heartbeat()
-    mvk.mav.request_data_stream_send(mvk.target_system, mvk.target_component, mavutil.mavlink.MAV_DATA_STREAM_ALL, 5, 1)
-
-    while(1):
-        re = mvk.recv_match()
-        print(re)
-
-if __name__ =="__main__":
-    main()
+while(1):
+    re = mavlin.recv_match(type = 'GPS_RAW_INT')
+    print(re)
+    time.sleep(0.1)
