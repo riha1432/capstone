@@ -15,7 +15,7 @@ mavlink_Message = [mavutil.mavlink.MAVLINK_MSG_ID_ATTITUDE, mavutil.mavlink.MAVL
 # sock_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 # sock_server.connect((tcp_ip_sever, tcp_port_sever))
 
-mvk = mavutil.mavlink_connection('tcp:192.168.0.4:5763')
+mvk = mavutil.mavlink_connection('tcp:192.168.0.12:5763')
 mvk.wait_heartbeat()
 
 def main():
