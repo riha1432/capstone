@@ -4,7 +4,8 @@ def Error(e):
     elif(e == 2):
         print("dont connect to drone")
     elif(e == 3):
-        print("dont connect to camera")
+        print("connect camera")
+    
     exit()
 
 

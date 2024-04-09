@@ -1,6 +1,8 @@
 from pymavlink import mavutil
 from Error import Error
 
+
+
 class Mavlink:
     def __init__(self):
         self.Message_Id = None
