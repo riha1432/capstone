@@ -1,6 +1,7 @@
 import cv2
 import base64
 import numpy as np
+import math
 from matplotlib import pyplot as plt
 from Error import Error
 
@@ -43,6 +44,7 @@ class Video:
             return None
         if cv2.waitKey(1) & 0xFF == ord('q'):
             return None
+        cv2.imshow('frame',self.frame)
         return
     
     def VideoData(self):
@@ -59,10 +61,16 @@ class Video:
     def Distance(self, x, y):
         self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
         self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
-        
+
         stereo = cv2.StereoBM_create(numDisparities=96, blockSize=5)
         disparity = stereo.compute(self.imgL, self.imgR)
         deep = 12
         return deep
+    
+    def Object_Dis(self, radi, height):
+        cos = math.cos(radi)
+        cos = height / cos
+        sin = math.size(radi) * cos
+        return cos, sin
 
 

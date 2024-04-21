@@ -6,6 +6,7 @@ REQUEST_DATA = 20
 class Socket:
     def __init__(self):
         self.socket = None
+        self.Server_data = None
 
     def Connect(self, ip, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -24,5 +25,9 @@ class Socket:
         self.socket.sendall(video + bytes("_D_",'utf-8') + data + bytes("_E_", 'utf-8'))
         return
 
-    def Receive(self, data):
+    def Receive(self):
+        while True:
+            print('<<', end=' ')
+            self.Server_data = self.socket.recv(20)
+            print('>>')
         return
