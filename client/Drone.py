@@ -57,13 +57,14 @@ class Mavlink:
         self.msg = self.mavlin.recv_match()
         
         if(self.msg != None):
-            print(self.msg)
             if(self.msg.get_type() == "LOCAL_POSITION_NED"):
-                Data[10] = self.__uint7(self.msg.z, 7)
-                Data[11] = self.__uint7(self.msg.z, 0)
+                # print(self.msg)
+                Data[10] = self.__uint7(int(-self.msg.z), 7)
+                Data[11] = self.__uint7(int(-self.msg.z), 0)
                 return 0
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
+                # print(self.msg)
                 Data[0] = self.__uint7(self.msg.lat, 28)
                 Data[1] = self.__uint7(self.msg.lat ,21)
                 Data[2] = self.__uint7(self.msg.lat, 14)
@@ -77,15 +78,18 @@ class Mavlink:
                 return 1
             
             elif(self.msg.get_type() == "RC_CHANNELS"):
+                # print(self.msg)
                 return 2
             
             elif(self.msg.get_type() == "VFR_HUD"):
+                # print(self.msg)
                 speed = int(self.msg.groundspeed * 10)
                 Data[14] = self.__uint7(speed,7)
                 Data[15] = self.__uint7(speed,0)
                 return 3
             
             elif(self.msg.get_type() == "BATTERY_STATUS"):
+                # print(self.msg)
                 vol = int(self.msg.voltages[0]/100)
                 Data[12] = self.__uint7(vol,7)
                 Data[13] = self.__uint7(vol,0)

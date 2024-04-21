@@ -4,6 +4,7 @@ import numpy as np
 import Server as Sm
 import Drone as Dm
 import Video as Vm
+from threading import Thread
 
 # mavlin = mavutil.mavlink_connection('tcp:localhost:5763')
 # mavlin = mavutil.mavlink_connection('COM9', baud=57600)
@@ -18,8 +19,8 @@ def setup():
     Server.Connect('192.168.0.6', 8484)
     Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
-    Video.Connect(0)
-    Video.VidoeSetup(1280,480,30)
+    # Video.Connect(1)
+    # Video.VidoeSetup(1280,480,30)
     return
     
 def main():
@@ -27,15 +28,20 @@ def main():
     index = 0
     Drone.Request(index)
     s = time.time()
+    th1 = Thread(target=Server.Receive, args=())
+    th1.start()
 
     while True:
+        Server_data = Server.Server_data
+        print(Server_data)
         num = Drone.Receive(Dron_data)
         if num == index:
             index = (index + 1) % rq
             Drone.Request(index)
-        
-        video = Video.VideoData()
+        # video = Video.VideoData()
+        video = b'a'
         Server.Send(video, Dron_data)
+
 
     Server.Close()
     Video.Close()
