@@ -10,12 +10,12 @@ capture.set(4, 480)
 s = time.time()
 while True:
     ret, frame = capture.read()
-    # imgL = cv2.cvtColor(frame[:, :640], cv2.COLOR_BGR2GRAY)
-    # cv2.imshow("L",imgL)
+    imgL = cv2.cvtColor(frame[:, :640], cv2.COLOR_BGR2GRAY)
+    cv2.imshow("L",imgL)
 
     # # 오른쪽 이미지qqq
-    # imgR = cv2.cvtColor(frame[:, 640:], cv2.COLOR_BGR2GRAY)
-    # cv2.imshow("R",imgR)
+    imgR = cv2.cvtColor(frame[:, 640:], cv2.COLOR_BGR2GRAY)
+    cv2.imshow("R",imgR)
     # estimate depth
     # stereo = cv2.StereoBM_create(numDisparities=16, blockSize=15)
     # disparity = stereo.compute(imgL, imgR)

@@ -13,6 +13,8 @@ class Video:
         self.encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
         self.ret = None
         self.frame = None
+        self.imgL = None
+        self.imgR = None
 
     def Connect(self, port):
         self.cam = cv2.VideoCapture(port)
@@ -55,10 +57,11 @@ class Video:
         return data
     
     def Distance(self, x, y):
-        imgL = []
-        imgR = []
-        stereo = cv2.StereoBM_create(numDisparities=16, blockSize=15)
-        disparity = stereo.compute(imgL, imgR)
+        self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
+        self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
+        
+        stereo = cv2.StereoBM_create(numDisparities=96, blockSize=5)
+        disparity = stereo.compute(self.imgL, self.imgR)
         deep = 12
         return deep
 
