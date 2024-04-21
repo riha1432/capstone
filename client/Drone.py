@@ -59,6 +59,8 @@ class Mavlink:
         if(self.msg != None):
             print(self.msg)
             if(self.msg.get_type() == "LOCAL_POSITION_NED"):
+                Data[10] = self.__uint7(self.msg.z, 7)
+                Data[11] = self.__uint7(self.msg.z, 0)
                 return 0
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
@@ -72,8 +74,6 @@ class Mavlink:
                 Data[7] = self.__uint7(self.msg.lon, 14)
                 Data[8] = self.__uint7(self.msg.lon, 7)
                 Data[9] = self.__uint7(self.msg.lon, 0)
-                Data[10] = self.__uint7(self.msg.alt, 7)
-                Data[11] = self.__uint7(self.msg.alt, 0)
                 return 1
             
             elif(self.msg.get_type() == "RC_CHANNELS"):
