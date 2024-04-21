@@ -15,7 +15,7 @@ Dron_data=bytearray(Sm.REQUEST_DATA)
 Server_data=bytearray(Sm.REQUEST_DATA)
 
 def setup():
-    Server.Connect('localhost', 8000)
+    Server.Connect('192.168.0.6', 8484)
     Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
     Video.Connect(0)
@@ -23,10 +23,17 @@ def setup():
     return
     
 def main():
-    while True:
-        Drone.Request()
-        Drone.Receive()
+    rq = len(Drone.Mav_Message)
+    index = 0
+    Drone.Request(index)
+    s = time.time()
 
+    while True:
+        num = Drone.Receive(Dron_data)
+        if num == index:
+            index = (index + 1) % rq
+            Drone.Request(index)
+        
         video = Video.VideoData()
         Server.Send(video, Dron_data)
 

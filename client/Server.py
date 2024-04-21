@@ -21,7 +21,7 @@ class Socket:
         return
 
     def Send(self, video, data):
-        self.socket.sendall(video + bytes("끝",'utf-8') + data + bytes("끝", 'utf-8'))
+        self.socket.sendall(video + bytes("_D_",'utf-8') + data + bytes("_E_", 'utf-8'))
         return
 
     def Receive(self, data):

@@ -19,8 +19,9 @@ class Video:
         if not self.cam.isOpened():
             print("dont connect to camera")
             Camera_Check = True
-        else:
             Error(3)
+        else:
+            print('connect to camera')
         return
     
     def Close(self):
@@ -29,9 +30,9 @@ class Video:
         return
 
     def VidoeSetup(self, width, height, frame):
-        self.set(WIDTH, width)
-        self.set(HEIGHT, height)
-        self.set(cv2.CAP_PROP_FPS, frame)
+        self.cam.set(3, width)
+        self.cam.set(4, height)
+        self.cam.set(cv2.CAP_PROP_FPS, frame)
         return
 
     def __video(self):
