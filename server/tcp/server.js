@@ -46,7 +46,6 @@ let tcp = net.createServer(function (socket) {
     socket.setEncoding('utf8')
 
     socket.on('data', function (data) {
-		console.log(socket)
         if(data.lastIndexOf("_E_") !== -1)
 		{
 			// console.log(data);
@@ -78,6 +77,7 @@ let tcp = net.createServer(function (socket) {
 			io.emit('status', status);
 			python.stdin.write(img + "\n");
             process_data = data[1]
+			socket.write('test');
         }
 		else 
         	process_data += data;
