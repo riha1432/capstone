@@ -1,6 +1,11 @@
 from pymavlink import mavutil
+from pymavlink.dialects.v20 import common
 from Error import Error
+import math
 
+P = 0
+I = 0
+D = 0
 class Mavlink:
     def __init__(self):
         self.Message_Id = None
@@ -21,7 +26,7 @@ class Mavlink:
     def Connect(self, address, baud = 0):
         self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_LOCAL_POSITION_NED) #// 32
         self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_GLOBAL_POSITION_INT) #// 33
-        self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_RC_CHANNELS) #// 65
+        self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_ATTITUDE ) #// 65
         self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_VFR_HUD) #// 74
         self.Mav_Message.append(mavutil.mavlink.MAVLINK_MSG_ID_BATTERY_STATUS) #// 147
 
@@ -44,8 +49,8 @@ class Mavlink:
 
     def Request(self, rq):
         self.mavlin.mav.command_long_send(
-            self.mavlin.target_system,
-            self.mavlin.target_component,
+            self.target_system,
+            self.target_component,
             mavutil.mavlink.MAV_CMD_REQUEST_MESSAGE,
             0,  # confirmation
             self.Mav_Message[rq],
@@ -53,18 +58,21 @@ class Mavlink:
         )
         return
 
-    def Receive(self, Data):
+    def Receive(self, Data, status):
         self.msg = self.mavlin.recv_match()
         
         if(self.msg != None):
             if(self.msg.get_type() == "LOCAL_POSITION_NED"):
                 # print(self.msg)
+                status.Alt = -self.msg.z
                 Data[10] = self.__uint7(int(-self.msg.z), 7)
                 Data[11] = self.__uint7(int(-self.msg.z), 0)
                 return 0
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
                 # print(self.msg)
+                status.NowLat = self.msg.lat
+                status.NowLon = self.msg.lon
                 Data[0] = self.__uint7(self.msg.lat, 28)
                 Data[1] = self.__uint7(self.msg.lat ,21)
                 Data[2] = self.__uint7(self.msg.lat, 14)
@@ -77,25 +85,70 @@ class Mavlink:
                 Data[9] = self.__uint7(self.msg.lon, 0)
                 return 1
             
-            elif(self.msg.get_type() == "RC_CHANNELS"):
+            elif(self.msg.get_type() == "ATTITUDE"):
                 # print(self.msg)
+                status.Roll = self.msg.roll * (180/math.pi)
+                status.Pitch = self.msg.pitch * (180/math.pi)
+                status.Yaw = self.msg.yaw * (180/math.pi)
+                print(status.Roll, status.Pitch, status.Yaw)
                 return 2
             
             elif(self.msg.get_type() == "VFR_HUD"):
                 # print(self.msg)
-                speed = int(self.msg.groundspeed * 10)
-                Data[14] = self.__uint7(speed,7)
-                Data[15] = self.__uint7(speed,0)
+                status.speed = int(self.msg.groundspeed * 10)
+                Data[14] = self.__uint7(status.speed,7)
+                Data[15] = self.__uint7(status.speed,0)
                 return 3
             
             elif(self.msg.get_type() == "BATTERY_STATUS"):
                 # print(self.msg)
-                vol = int(self.msg.voltages[0]/100)
-                Data[12] = self.__uint7(vol,7)
-                Data[13] = self.__uint7(vol,0)
+                status.Bettery = int(self.msg.voltages[0]/100)
+                Data[12] = self.__uint7(status.Bettery,7)
+                Data[13] = self.__uint7(status.Bettery,0)
                 return 4
  
         return -1
     
-    def Sendcommand(self, data = 0):
+    def Sendcommand(self, Cmd, status):
+
+        if(Cmd.Commend == 4):
+            self.mavlin.mav.command_long_send(self.target_system, self.target_component, 
+                          common.MAV_CMD_COMPONENT_ARM_DISARM,0, 1,0,0,0,0,0,0)
+            
+        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 3):
+            self.mavlin.set_mode_apm(4, 1, 1)
+
+        elif(Cmd.Commend == 2):
+            self.mavlin.set_mode_apm(6, 1, 1)
+
+        elif(Cmd.Commend == 1):
+            self.mavlin.mav.command_long_send(self.target_system, self.target_component,
+                                common.MAV_CMD_NAV_TAKEOFF, 0, 0,0,0,0,0,0,10)
+            
+        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5):
+            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+                                                                             mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
+        
+        elif(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0 and Cmd.Commend == 5):
+            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+                                                                             mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000), status.NowLat + 0, status.NowLat + 0, 15, 0,0,0, 0,0,0, 0,0))
         return
+    
+class Status:
+    def __init__(self):
+        self.Roll = 0
+        self.Pitch = 0
+        self.Yaw = 0
+        self.Bettery = 0
+        self.NowLon = 0
+        self.NowLat = 0
+        self.Alt = 0
+        self.speed = 0
+
+class Commend:
+    def __init__(self):
+        self.videoObjectCenterH = 0
+        self.videoObjectCenterW = 0
+        self.Commend = 0
+        self.CommendLat = 0
+        self.CommendLon = 0

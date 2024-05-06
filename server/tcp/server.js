@@ -34,6 +34,7 @@ python.stdout.on('data', function (data) {
 	else
 		py_data += data;
 });
+
 python.stderr.on('data', function (data) {
     console.log("error")
     console.log(data.toString("utf8"));
@@ -63,7 +64,7 @@ let tcp = net.createServer(function (socket) {
             battery = process_data[1][12].charCodeAt(0)<<7 | process_data[1][13].charCodeAt(0)
 			
 			status['name'] = "test_name";
-			status['speed'] = speed;
+			status['speed'] = speed/10.0;
 			status['rotateX'] = 10;
 			status['rotateY'] = 10;
 			status['rotateZ'] = 10;
@@ -75,6 +76,7 @@ let tcp = net.createServer(function (socket) {
 			}
 
 			io.emit('status', status);
+			io.emit('img', img);
 			python.stdin.write(img + "\n");
             process_data = data[1]
 			socket.write('sat');

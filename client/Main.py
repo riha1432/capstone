@@ -6,42 +6,41 @@ import Drone as Dm
 import Video as Vm
 from threading import Thread
 
-# mavlin = mavutil.mavlink_connection('tcp:localhost:5763')
-# mavlin = mavutil.mavlink_connection('COM9', baud=57600)
-
 Server = Sm.Socket()
-# Drone = Dm.Mavlink()
+Drone = Dm.Mavlink()
+Status = Dm.Status()
+Cmd = Dm.Commend()
 Video = Vm.Video(90)
 Dron_data=bytearray(Sm.REQUEST_DATA)
 Server_data=bytearray(Sm.REQUEST_DATA)
 
+ANGLE_VIEW = 54
 def setup():
-    Server.Connect('192.168.137.1', 8484)
-    # Drone.Connect('tcp:localhost:5763')
+    Server.Connect('localhost', 8484)
+    Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
     Video.Connect(0)
     Video.VidoeSetup(1280,480,30)
     return
     
 def main():
-    # rq = len(Drone.Mav_Message)
+    rq = len(Drone.Mav_Message)
     index = 0
-    # Drone.Request(index)
+    Drone.Request(index)
     s = time.time()
-    th1 = Thread(target=Server.Receive, args=())
+    th1 = Thread(target=Server.Receive, args=(Cmd))
     th1.start()
 
     while True:
-        Server_data = Server.Server_data
-        print(Server_data)
-        # num = Drone.Receive(Dron_data)
-        # if num == index:
-            # index = (index + 1) % rq
-            # Drone.Request(index)
-        video = Video.VideoData()
-        # video = b'a'
-        Server.Send(video, Dron_data)
+        num = Drone.Receive(Dron_data, Status)
+        if num == index:
+            index = (index + 1) % rq
+            Drone.Request(index)
+        
+        Drone.Sendcommand(Cmd)
 
+        video = Video.VideoData()
+        Server.Send(video, Dron_data)
 
     Server.Close()
     Video.Close()
