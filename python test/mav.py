@@ -36,7 +36,7 @@ while(True):
             lon = msg.lon
             # print(msg)
             mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
-                                                                                mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111000111), lat + 100, lon + 100, 20, 0.5,0.5,0, 0,0,0, 0,0))
+                                                                                mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111111000), lat - 1, lon + 100000 , 20, 0.5,0.5,0, 0,0,0, 0,0))
             break
 #     time.sleep(3)
 # mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,

@@ -3,9 +3,7 @@ from pymavlink.dialects.v20 import common
 from Error import Error
 import math
 
-P = 0
-I = 0
-D = 0
+
 class Mavlink:
     def __init__(self):
         self.Message_Id = None

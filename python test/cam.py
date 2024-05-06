@@ -10,6 +10,8 @@ capture.set(4, 480)
 s = time.time()
 while True:
     ret, frame = capture.read()
+    cv2.imshow("t",frame)
+
     imgL = cv2.cvtColor(frame[:, :640], cv2.COLOR_BGR2GRAY)
     cv2.imshow("L",imgL)
 
@@ -20,19 +22,19 @@ while True:
     # stereo = cv2.StereoBM_create(numDisparities=16, blockSize=15)
     # disparity = stereo.compute(imgL, imgR)
 
-    stereo = cv2.StereoSGBM.create(numDisparities=96, blockSize=1)
-    disparity = stereo.compute(frame[:,:640], frame[:,640:])
-    cv2.imshow("R",frame[:,:640])
+    # stereo = cv2.StereoSGBM.create(numDisparities=96, blockSize=1)
+    # disparity = stereo.compute(frame[:,:640], frame[:,640:])
+    # cv2.imshow("R",frame[:,:640])
 
-    if time.time() - s > 0.5 :
-        s = time.time()
-        print(np.average(disparity[:,:]), end='   /    ')
-        print(np.average(disparity[200:280,280:360]))
-    Min, Max = np.min(disparity), np.max(disparity)
-    disparity = disparity + Min
-    disparity = disparity / ((Min + Max)/255)
-    print(disparity)
-    cv2.imshow("a", disparity)
+    # if time.time() - s > 0.5 :
+    #     s = time.time()
+    #     print(np.average(disparity[:,:]), end='   /    ')
+    #     print(np.average(disparity[200:280,280:360]))
+    # Min, Max = np.min(disparity), np.max(disparity)
+    # disparity = disparity + Min
+    # disparity = disparity / ((Min + Max)/255)
+    # print(disparity)
+    # cv2.imshow("a", disparity)
     cv2.waitKey(20)
 
 

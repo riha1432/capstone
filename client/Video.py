@@ -7,6 +7,8 @@ from Error import Error
 
 WIDTH = 3
 HEIGHT = 4
+WANAGLE_VIEW = 75
+HANAGLE_VIEW = 42
 
 class Video:
     def __init__(self, quality = 95):
@@ -68,9 +70,9 @@ class Video:
         return deep
     
     def Object_Dis(self, radi, height):
-        cos = math.cos(radi)
-        cos = height / cos
-        sin = math.size(radi) * cos
-        return cos, sin
+        Dcos = math.cos(math.pi * (radi / 180))
+        Dcos = height / Dcos
+        Dsin = math.sin(math.pi * (radi / 180)) * Dcos
+        return Dcos, Dsin
 
 
