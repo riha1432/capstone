@@ -41,7 +41,7 @@ def main():
         Server.Send(video, Dron_data)
 
         Drone.Sendcommand(Cmd)
-        
+        Video.Object_Dis(45 + Status.pitch)
 
 
     Server.Close()
