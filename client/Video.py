@@ -18,6 +18,8 @@ class Video:
         self.frame = None
         self.imgL = None
         self.imgR = None
+        self.MaxH = 0
+        self.MaxW = 0
 
     def Connect(self, port):
         self.cam = cv2.VideoCapture(port)
@@ -35,6 +37,8 @@ class Video:
         return
 
     def VidoeSetup(self, width, height, frame):
+        self.MaxH = height
+        self.MaxW = width
         self.cam.set(3, width)
         self.cam.set(4, height)
         self.cam.set(cv2.CAP_PROP_FPS, frame)
@@ -60,19 +64,22 @@ class Video:
         data = base64.b64encode(buffer)
         return data
     
-    def Distance(self, x, y):
-        self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
-        self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
+    # def Distance(self, x, y):
+    #     self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
+    #     self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
 
-        stereo = cv2.StereoBM_create(numDisparities=96, blockSize=5)
-        disparity = stereo.compute(self.imgL, self.imgR)
-        deep = 12
-        return deep
+    #     stereo = cv2.StereoBM_create(numDisparities=96, blockSize=5)
+    #     disparity = stereo.compute(self.imgL, self.imgR)
+    #     deep = 12
+    #     return deep
     
-    def Object_Dis(self, radi, height):
-        Dcos = math.cos(math.pi * (radi / 180))
-        Dcos = height / Dcos
-        Dsin = math.sin(math.pi * (radi / 180)) * Dcos
-        return Dcos, Dsin
+    def Object_Dis(self, height, cmd): 
+        Hradian = (cmd.videoObjectCenterW - (self.MaxH / 2)) * (HANAGLE_VIEW / self.MaxH)
+        Object_Distance = math.cos(math.pi * (45 + Hradian / 180))
+        Object_Distance = height / Object_Distance
+        Horizontal_Distance = math.sin(math.pi * (45 + Hradian / 180)) * Object_Distance
+        RL_Distance = (cmd.videoObjectCenterW - (self.MaxW / 2)) * (WANAGLE_VIEW / self.MaxW)
+        RL_Distance = math.cos(math.pi * (RL_Distance / 180))
+        Object_Distance = Horizontal_Distance / Object_Distance
 
-
+        return Object_Distance, Horizontal_Distance, Object_Distance

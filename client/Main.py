@@ -37,10 +37,12 @@ def main():
             index = (index + 1) % rq
             Drone.Request(index)
         
-        Drone.Sendcommand(Cmd)
-
         video = Video.VideoData()
         Server.Send(video, Dron_data)
+
+        Drone.Sendcommand(Cmd)
+        
+
 
     Server.Close()
     Video.Close()
