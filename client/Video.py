@@ -7,6 +7,7 @@ from Error import Error
 
 WIDTH = 3
 HEIGHT = 4
+camAngle = 45
 WANAGLE_VIEW = 75
 HANAGLE_VIEW = 42
 
@@ -64,7 +65,7 @@ class Video:
         data = base64.b64encode(buffer)
         return data
     
-    # def Distance(self, x, y):
+    # def Stereo(self, x, y):
     #     self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
     #     self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
 
@@ -73,13 +74,21 @@ class Video:
     #     deep = 12
     #     return deep
     
-    def Object_Dis(self, height, cmd): 
-        Hradian = (cmd.videoObjectCenterW - (self.MaxH / 2)) * (HANAGLE_VIEW / self.MaxH)
-        Object_Distance = math.cos(math.pi * (45 + Hradian / 180))
-        Object_Distance = height / Object_Distance
-        Horizontal_Distance = math.sin(math.pi * (45 + Hradian / 180)) * Object_Distance
-        RL_Distance = (cmd.videoObjectCenterW - (self.MaxW / 2)) * (WANAGLE_VIEW / self.MaxW)
-        RL_Distance = math.cos(math.pi * (RL_Distance / 180))
-        Object_Distance = Horizontal_Distance / Object_Distance
+    def Object_Dis(self, status ,cmd):
+        pixelAngleH = (HANAGLE_VIEW / self.MaxH)
+        videoHC = (self.MaxH / 2) - status.pitch / pixelAngleH
+        pixelAngleH = (cmd.videoObjectCenterH - videoHC) * pixelAngleH
+        Cos_Distance = math.cos(math.pi * ((camAngle + pixelAngleH) / 180))
+        Cos_Distance = cmd.height / Cos_Distance
 
-        return Object_Distance, Horizontal_Distance, Object_Distance
+        pixelAngleW = (WANAGLE_VIEW / self.MaxW)
+        pixelAngleW = (cmd.videoObjectCenterW - (640 / 2)) * pixelAngleW
+        Object_Distance = math.cos(math.pi * (pixelAngleW / 180))
+        Object_Distance = Cos_Distance / Object_Distance # 객채 거리
+        
+        Horizontal_Distance = math.sin(math.pi * ((camAngle + pixelAngleH) / 180)) * Object_Distance # 객채 수평 겨리
+        
+        RL_Distance = math.tan(math.pi * (pixelAngleW / 180))
+        RL_Distance = RL_Distance * Cos_Distance # 좌우 겨리
+
+        return { Object_Distance, Horizontal_Distance, RL_Distance, pixelAngleW }

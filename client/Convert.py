@@ -1,12 +1,12 @@
 import math
 
-def get_location_metres(original_location, dNorth, dEast):
+def get_location_metres(original_location, Distance):
 
     earth_radius = 6378137.0 
 
     # Coordinate offsets in radians
-    dLat = dNorth / earth_radius
-    dLon = dEast / (earth_radius * math.cos(math.pi * original_location.lat/180))
+    dLat = Distance['Horizontal_Distance'] / earth_radius
+    dLon = Distance['RL_Distance'] / (earth_radius * math.cos(math.pi * original_location.lat/180))
 
     # New position in decimal degrees
     newlat = original_location.lat + (dLat * 180/math.pi)

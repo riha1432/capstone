@@ -150,3 +150,4 @@ class Commend:
         self.Commend = 0
         self.CommendLat = 0
         self.CommendLon = 0
+        self.heigth = 0

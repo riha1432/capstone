@@ -39,5 +39,6 @@ class Socket:
                             self.__uint7(self.Server_data[6], 14) | self.__uint7(self.Server_data[7], 7) | self.Server_data[8] )
             Cmd.CommendLon = ( self.__uint7(self.Server_data[9], 28) | self.__uint7(self.Server_data[10], 21) | 
                             self.__uint7(self.Server_data[11], 14) | self.__uint7(self.Server_data[12], 7) | self.Server_data[13] )
-            Cmd.Commend = self.Server_data[14]
+            Cmd.Height = self.__uint7(self.Server_data[14], 7) | self.Server_data[15]
+            Cmd.Commend = self.Server_data[16]
         return
