@@ -5,14 +5,14 @@ def get_location_metres(original_location, Distance):
     earth_radius = 6378137.0 
 
     # Coordinate offsets in radians
-    dLat = Distance['Horizontal_Distance'] / earth_radius
-    dLon = Distance['RL_Distance'] / (earth_radius * math.cos(math.pi * original_location.lat/180))
+    dLat = Distance[4] / earth_radius
+    dLon = Distance[5] / (earth_radius * math.cos(math.pi * original_location.NowLat/180))
 
     # New position in decimal degrees
-    newlat = original_location.lat + (dLat * 180/math.pi)
-    newlon = original_location.lon + (dLon * 180/math.pi)
+    newlat = original_location.NowLat + (dLat * 180/math.pi)
+    newlon = original_location.NowLon + (dLon * 180/math.pi)
 
-    return newlat, newlon
+    return [int(newlat * 10000000), int(newlon * 10000000)]
 
 
 def get_distance_metres(aLocation1, aLocation2):

@@ -51,7 +51,7 @@ class Video:
             return None
         if cv2.waitKey(1) & 0xFF == ord('q'):
             return None
-        cv2.imshow('frame',self.frame)
+        # cv2.imshow('frame',self.frame)
         return
     
     def VideoData(self):
@@ -61,8 +61,10 @@ class Video:
         
         if not ret:
             return None
-        
+
         data = base64.b64encode(buffer)
+
+        # cv2.imwrite('./output.png', img_out)
         return data
     
     # def Stereo(self, x, y):
@@ -76,19 +78,26 @@ class Video:
     
     def Object_Dis(self, status ,cmd):
         pixelAngleH = (HANAGLE_VIEW / self.MaxH)
-        videoHC = (self.MaxH / 2) - status.pitch / pixelAngleH
+        videoHC = (self.MaxH / 2) - status.Pitch / pixelAngleH
         pixelAngleH = (cmd.videoObjectCenterH - videoHC) * pixelAngleH
         Cos_Distance = math.cos(math.pi * ((camAngle + pixelAngleH) / 180))
-        Cos_Distance = cmd.height / Cos_Distance
+        Cos_Distance = cmd.heigth / Cos_Distance
 
         pixelAngleW = (WANAGLE_VIEW / self.MaxW)
         pixelAngleW = (cmd.videoObjectCenterW - (640 / 2)) * pixelAngleW
         Object_Distance = math.cos(math.pi * (pixelAngleW / 180))
         Object_Distance = Cos_Distance / Object_Distance # 객채 거리
         
-        Horizontal_Distance = math.sin(math.pi * ((camAngle + pixelAngleH) / 180)) * Object_Distance # 객채 수평 겨리
+        Horizontal_Distance = math.sin(math.pi * ((camAngle + pixelAngleH) / 180)) * Object_Distance # 객채 수평 겨리        print("cccc : ",Horizontal_Distance)
         
         RL_Distance = math.tan(math.pi * (pixelAngleW / 180))
         RL_Distance = RL_Distance * Cos_Distance # 좌우 겨리
 
-        return { Object_Distance, Horizontal_Distance, RL_Distance, pixelAngleW }
+        Angle = ( status.Yaw + pixelAngleW )
+
+        dNorth = math.cos(math.pi * (Angle / 180))
+        dNorth = dNorth * Horizontal_Distance
+        dEast = math.sin(math.pi * (Angle / 180))
+        dEast = dEast * Horizontal_Distance
+
+        return [Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, dNorth, dEast]

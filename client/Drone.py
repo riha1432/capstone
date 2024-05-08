@@ -69,8 +69,8 @@ class Mavlink:
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
                 # print(self.msg)
-                status.NowLat = self.msg.lat
-                status.NowLon = self.msg.lon
+                status.NowLat = self.msg.lat / 10000000.0
+                status.NowLon = self.msg.lon / 10000000.0
                 Data[0] = self.__uint7(self.msg.lat, 28)
                 Data[1] = self.__uint7(self.msg.lat ,21)
                 Data[2] = self.__uint7(self.msg.lat, 14)
@@ -88,7 +88,7 @@ class Mavlink:
                 status.Roll = self.msg.roll * (180/math.pi)
                 status.Pitch = self.msg.pitch * (180/math.pi)
                 status.Yaw = self.msg.yaw * (180/math.pi)
-                print(status.Roll, status.Pitch, status.Yaw)
+                # print(status.Roll, status.Pitch, status.Yaw)
                 return 2
             
             elif(self.msg.get_type() == "VFR_HUD"):
@@ -145,9 +145,9 @@ class Status:
 
 class Commend:
     def __init__(self):
-        self.videoObjectCenterH = 0
-        self.videoObjectCenterW = 0
+        self.videoObjectCenterH = 240
+        self.videoObjectCenterW = 400
         self.Commend = 0
         self.CommendLat = 0
         self.CommendLon = 0
-        self.heigth = 0
+        self.heigth = 10
