@@ -33,17 +33,11 @@ def main():
     th1 = Thread(target=Server.Receive, args=(Cmd,)) # 서버 데이터 수신
     th1.start() # 서버 데이터 수신
 
-    n = 0
     while True:
         # Cmd.setdata(Server.Server_data)
 
         Distance = Video.Object_Dis(Status, Cmd) # 거리측정
         newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
-
-        # if(n > 10):
-        #     print(Server.Server_data)
-        #     n = 0
-        # n+=1
 
         num = Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if num == index:
