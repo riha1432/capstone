@@ -79,7 +79,7 @@ let tcp = net.createServer(function (socket) {
 			io.emit('img', img);
 			python.stdin.write(img + "\n");
             process_data = data[1]
-			socket.write('sat');
+			socket.write('12345678901234567890');
         }
 		else 
         	process_data += data;

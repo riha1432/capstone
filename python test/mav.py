@@ -1,4 +1,5 @@
 from pymavlink import mavutil
+from pymavlink.dialects.v20 import common
 import time
 
 mavlin = mavutil.mavlink_connection('tcp:localhost:5763')
@@ -35,8 +36,17 @@ while(True):
             lat = msg.lat
             lon = msg.lon
             # print(msg)
-            mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
-                                                                                mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111111000), -353624074, 1491627612 , 20, 0.5,0.5,0, 0,0,0, 0,0))
+
+            mavlin.mav.command_long_send(
+                target_system,
+                target_component,
+                common.MAV_CMD_CONDITION_YAW,
+                0,  # confirmation
+                90, 0, 0, 0, 0, 0, 0  # unused parameters
+            )
+            
+            # mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
+            #                                                                     mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111111000), -353624074 + 10, 1491627612 + 10, 20, 0.5,0.5,0, 0,0,0, 0,0))
             break
 # mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
 #                                                                                 mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111000111), lat + 100, lon + 100, 20, 0,0,0, 0,0,0, 0,0))
