@@ -29,28 +29,32 @@ def main():
     index = 0
     Drone.Request(index)
     s = time.time()
-    th1 = Thread(target=Server.Receive, args=(Cmd)) # 서버 데이터 수신
+
+    th1 = Thread(target=Server.Receive, args=(Cmd,)) # 서버 데이터 수신
     th1.start() # 서버 데이터 수신
+
     n = 0
     while True:
+        # Cmd.setdata(Server.Server_data)
+
         Distance = Video.Object_Dis(Status, Cmd) # 거리측정
         newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
 
-        if(n > 10):
-            print(Distance)
-            print(newgps)
-            n = 0
-        n+=1
+        # if(n > 10):
+        #     print(Server.Server_data)
+        #     n = 0
+        # n+=1
 
         num = Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if num == index:
             index = (index + 1) % rq
             Drone.Request(index) # 드론 데이터 요청
-        # Drone.Sendcommand(Cmd) # 드론 데이터 전송
+        Drone.Sendcommand(Cmd, Status) # 드론 데이터 전송
 
         video = Video.VideoData() # 비디오 수신
-        Server.Send(video, Dron_data) # 서버 전송
 
+        Server.Send(video, Dron_data) # 서버 전송
+    
     Server.Close()
     Video.Close()
     return

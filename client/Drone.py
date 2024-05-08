@@ -114,10 +114,10 @@ class Mavlink:
                           common.MAV_CMD_COMPONENT_ARM_DISARM,0, 1,0,0,0,0,0,0)
             
         elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 3):
-            self.mavlin.set_mode_apm(4, 1, 1)
+            self.mavlin.set_mode_apm(4, 1, 1)  # 가이드 모드
 
         elif(Cmd.Commend == 2):
-            self.mavlin.set_mode_apm(6, 1, 1)
+            self.mavlin.set_mode_apm(6, 1, 1) # 복귀
 
         elif(Cmd.Commend == 1):
             self.mavlin.mav.command_long_send(self.target_system, self.target_component,
@@ -151,3 +151,16 @@ class Commend:
         self.CommendLat = 0
         self.CommendLon = 0
         self.heigth = 10
+
+    def __uint7(self, val, bit):
+        return val<<bit
+    
+    def setdata(self, Server_data):
+        self.videoObjectCenterH = self.__uint7(Server_data[0], 7) | Server_data[1]
+        self.videoObjectCenterW = self.__uint7(Server_data[2], 7) | Server_data[3]
+        self.CommendLat = ( self.__uint7(Server_data[4], 28) | self.__uint7(Server_data[5], 21) | 
+                        self.__uint7(Server_data[6], 14) | self.__uint7(Server_data[7], 7) | Server_data[8] )
+        self.CommendLon = ( self.__uint7(Server_data[9], 28) | self.__uint7(Server_data[10], 21) | 
+                        self.__uint7(Server_data[11], 14) | self.__uint7(Server_data[12], 7) | Server_data[13] )
+        self.Height = self.__uint7(Server_data[14], 7) | Server_data[15]
+        self.Commend = Server_data[16]
