@@ -89,15 +89,15 @@ class Video:
         Object_Distance = Cos_Distance / Object_Distance # 객채 거리
         
         Horizontal_Distance = math.sin(math.pi * ((camAngle + pixelAngleH) / 180)) * Object_Distance # 객채 수평 겨리        print("cccc : ",Horizontal_Distance)
-        
-        RL_Distance = math.tan(math.pi * (pixelAngleW / 180))
-        RL_Distance = RL_Distance * Cos_Distance # 좌우 겨리
 
         Angle = ( status.Yaw + pixelAngleW )
-
+        
         dNorth = math.cos(math.pi * (Angle / 180))
         dNorth = dNorth * Horizontal_Distance
         dEast = math.sin(math.pi * (Angle / 180))
         dEast = dEast * Horizontal_Distance
+        # print(Angle)
+        # if(Angle < 0):
+        #     Angle = 360 - Angle
 
-        return [Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, dNorth, dEast]
+        return [Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, dNorth, dEast, Angle]

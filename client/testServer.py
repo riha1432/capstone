@@ -29,6 +29,24 @@ mode = 0
 pixelH = 0
 pixelW = 0
 
+videoObjectCenterH = 240
+videoObjectCenterW = 400
+Commend = 0
+CommendLat = 0
+CommendLon = 0
+heigth = 10
+
+def uint7(val, bit):
+        return val>>bit & 0X0000007F
+
+Send[0] = uint7(int(videoObjectCenterH), 7)
+Send[1] = uint7(int(videoObjectCenterH), 0)
+Send[2] = uint7(int(videoObjectCenterW), 7)
+Send[3] = uint7(int(videoObjectCenterW), 0)
+Send[14] = uint7(int(videoObjectCenterW), 7)
+Send[15] = uint7(int(videoObjectCenterW), 0)
+
+
 def Object_ID():
     global end, id, mode
     while True:

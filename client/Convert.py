@@ -16,15 +16,15 @@ def get_location_metres(original_location, Distance):
 
 
 def get_distance_metres(aLocation1, aLocation2):
-    dlat = aLocation2.lat - aLocation1.lat
-    dlong = aLocation2.lon - aLocation1.lon
+    dlat = aLocation1.NowLat - aLocation2[0]
+    dlong = aLocation1.NowLon - aLocation2[1]
 
     return math.sqrt((dlat*dlat) + (dlong*dlong)) * 1.113195e5
 
 
 def get_bearing(aLocation1, aLocation2):
-    off_x = aLocation2.lon - aLocation1.lon
-    off_y = aLocation2.lat - aLocation1.lat
+    off_x = aLocation1.NowLon - aLocation2[1]
+    off_y = aLocation1.NowLat - aLocation2[0] 
     bearing = 90.00 + math.atan2(-off_y, off_x) * 57.2957795
 
     if bearing < 0:

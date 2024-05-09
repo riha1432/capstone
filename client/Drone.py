@@ -3,6 +3,7 @@ from pymavlink.dialects.v20 import common
 from Error import Error
 import math
 
+OFFSET_X = 10
 
 class Mavlink:
     def __init__(self):
@@ -68,7 +69,7 @@ class Mavlink:
                 return 0
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
-                # print(self.msg)
+                print(self.msg)
                 status.NowLat = self.msg.lat / 10000000.0
                 status.NowLon = self.msg.lon / 10000000.0
                 Data[0] = self.__uint7(self.msg.lat, 28)
@@ -84,7 +85,7 @@ class Mavlink:
                 return 1
             
             elif(self.msg.get_type() == "ATTITUDE"):
-                # print(self.msg)
+                print(self.msg)
                 status.Roll = self.msg.roll * (180/math.pi)
                 status.Pitch = self.msg.pitch * (180/math.pi)
                 status.Yaw = self.msg.yaw * (180/math.pi)
@@ -107,9 +108,9 @@ class Mavlink:
  
         return -1
     
-    def Sendcommand(self, Cmd, status):
+    def Sendcommand(self, Cmd, status, Angle, O_newgps):
 
-        if(Cmd.Commend == 4):
+        if(Cmd.Commend == 4): # 시동
             self.mavlin.mav.command_long_send(self.target_system, self.target_component, 
                           common.MAV_CMD_COMPONENT_ARM_DISARM,0, 1,0,0,0,0,0,0)
             
@@ -119,17 +120,25 @@ class Mavlink:
         elif(Cmd.Commend == 2):
             self.mavlin.set_mode_apm(6, 1, 1) # 복귀
 
-        elif(Cmd.Commend == 1):
+        elif(Cmd.Commend == 1): # 이륙
             self.mavlin.mav.command_long_send(self.target_system, self.target_component,
                                 common.MAV_CMD_NAV_TAKEOFF, 0, 0,0,0,0,0,0,10)
             
-        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5):
+        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5): # 이동
             self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
                                                                              mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
         
         elif(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0 and Cmd.Commend == 5):
-            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
-                                                                             mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000), status.NowLat + 0, status.NowLat + 0, 15, 0,0,0, 0,0,0, 0,0))
+            self.mavlin.mav.command_long_send(
+                self.target_system,
+                self.target_component,
+                common.MAV_CMD_CONDITION_YAW,
+                0,  # confirmation
+                Angle, 0, 0, 0, 0, 0, 0  # unused parameters
+            )
+            # self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+            #                                                                  mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000), O_newgps[0], O_newgps[1], 15, 0,0,0, 0,0,0, 0,0))
+            
         return
     
 class Status:
@@ -152,15 +161,15 @@ class Commend:
         self.CommendLon = 0
         self.heigth = 10
 
-    def __uint7(self, val, bit):
-        return val<<bit
+    # def __uint7(self, val, bit):
+    #     return val<<bit
     
-    def setdata(self, Server_data):
-        self.videoObjectCenterH = self.__uint7(Server_data[0], 7) | Server_data[1]
-        self.videoObjectCenterW = self.__uint7(Server_data[2], 7) | Server_data[3]
-        self.CommendLat = ( self.__uint7(Server_data[4], 28) | self.__uint7(Server_data[5], 21) | 
-                        self.__uint7(Server_data[6], 14) | self.__uint7(Server_data[7], 7) | Server_data[8] )
-        self.CommendLon = ( self.__uint7(Server_data[9], 28) | self.__uint7(Server_data[10], 21) | 
-                        self.__uint7(Server_data[11], 14) | self.__uint7(Server_data[12], 7) | Server_data[13] )
-        self.Height = self.__uint7(Server_data[14], 7) | Server_data[15]
-        self.Commend = Server_data[16]
+    # def setdata(self, Server_data):
+    #     self.videoObjectCenterH = self.__uint7(Server_data[0], 7) | Server_data[1]
+    #     self.videoObjectCenterW = self.__uint7(Server_data[2], 7) | Server_data[3]
+    #     self.CommendLat = ( self.__uint7(Server_data[4], 28) | self.__uint7(Server_data[5], 21) | 
+    #                     self.__uint7(Server_data[6], 14) | self.__uint7(Server_data[7], 7) | Server_data[8] )
+    #     self.CommendLon = ( self.__uint7(Server_data[9], 28) | self.__uint7(Server_data[10], 21) | 
+    #                     self.__uint7(Server_data[11], 14) | self.__uint7(Server_data[12], 7) | Server_data[13] )
+    #     self.Height = self.__uint7(Server_data[14], 7) | Server_data[15]
+    #     self.Commend = Server_data[16]
