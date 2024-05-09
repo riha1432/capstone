@@ -69,7 +69,7 @@ class Mavlink:
                 return 0
             
             if(self.msg.get_type() == "GLOBAL_POSITION_INT"):
-                print(self.msg)
+                # print(self.msg)
                 status.NowLat = self.msg.lat / 10000000.0
                 status.NowLon = self.msg.lon / 10000000.0
                 Data[0] = self.__uint7(self.msg.lat, 28)
@@ -89,6 +89,7 @@ class Mavlink:
                 status.Roll = self.msg.roll * (180/math.pi)
                 status.Pitch = self.msg.pitch * (180/math.pi)
                 status.Yaw = self.msg.yaw * (180/math.pi)
+
                 # print(status.Roll, status.Pitch, status.Yaw)
                 return 2
             
@@ -136,8 +137,9 @@ class Mavlink:
                 0,  # confirmation
                 Angle, 0, 0, 0, 0, 0, 0  # unused parameters
             )
-            # self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
-            #                                                                  mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000), O_newgps[0], O_newgps[1], 15, 0,0,0, 0,0,0, 0,0))
+            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+                                                                            mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000), 
+                                                                            O_newgps[0], O_newgps[1], 15, 0,0,0, 0,0,0, 0,0))
             
         return
     

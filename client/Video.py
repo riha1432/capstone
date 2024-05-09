@@ -96,8 +96,8 @@ class Video:
         dNorth = dNorth * Horizontal_Distance
         dEast = math.sin(math.pi * (Angle / 180))
         dEast = dEast * Horizontal_Distance
-        # print(Angle)
-        # if(Angle < 0):
-        #     Angle = 360 - Angle
+        print(Angle)
+        if(Angle < 0):
+            Angle = 360 + Angle
 
         return [Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, dNorth, dEast, Angle]

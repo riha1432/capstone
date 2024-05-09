@@ -33,23 +33,24 @@ def main():
     th1 = Thread(target=Server.Receive, args=(Cmd,)) # 서버 데이터 수신
     th1.start() # 서버 데이터 수신
 
-    O_LastGps = None 
+    O_LastGps = None
+    movegps = [0, 0]
     while True:
         Distance = Video.Object_Dis(Status, Cmd) # 거리측정
         O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
-        Angle = Cv.get_bearing(Status, O_newgps)
-        # print('new', Angle)
-        # print('last', O_LastGps)
+        
+        movegps[0] = (O_LastGps[0] - O_newgps[0]) + Status.NowLat
+        movegps[1] = (O_LastGps[1] - O_newgps[1]) + Status.NowLon
+
         num = Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if num == index:
             index = (index + 1) % rq
             Drone.Request(index) # 드론 데이터 요청
         if(time.time() - droneSend > 0.2):
-            Drone.Sendcommand(Cmd, Status, Distance[6], O_newgps) # 드론 데이터 전송
+            Drone.Sendcommand(Cmd, Status, Distance[6], movegps) # 드론 데이터 전송
             droneSend = time.time()
-
-        O_LastGps = O_newgps
-        
+            O_LastGps = O_newgps
+    
         video = Video.VideoData() # 비디오 수신
 
         Server.Send(video, Dron_data) # 서버 전송
