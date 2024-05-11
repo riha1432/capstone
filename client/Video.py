@@ -63,7 +63,7 @@ class Video:
             return None
 
         data = base64.b64encode(buffer)
-
+        cv2.imshow('a', buffer)
         # cv2.imwrite('./output.png', img_out)
         return data
     

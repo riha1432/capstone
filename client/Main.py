@@ -39,8 +39,8 @@ def main():
         Distance = Video.Object_Dis(Status, Cmd) # 거리측정
         O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
         
-        movegps[0] = (O_LastGps[0] - O_newgps[0]) + Status.NowLat
-        movegps[1] = (O_LastGps[1] - O_newgps[1]) + Status.NowLon
+        # movegps[0] = (O_LastGps[0] - O_newgps[0]) + Status.NowLat
+        # movegps[1] = (O_LastGps[1] - O_newgps[1]) + Status.NowLon
 
         num = Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if num == index:
