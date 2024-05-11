@@ -29,8 +29,8 @@ mode = 0
 pixelH = 0
 pixelW = 0
 
-videoObjectCenterH = 240
-videoObjectCenterW = 400
+videoObjectCenterH = 480
+videoObjectCenterW = 320
 Commend = 0
 CommendLat = 0
 CommendLon = 0

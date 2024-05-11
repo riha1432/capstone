@@ -16,6 +16,7 @@ Dron_data=bytearray(Sm.REQUEST_DATA)
 Server_data=bytearray(Sm.REQUEST_DATA)
 
 ANGLE_VIEW = 54
+RANGE = 2.5
 def setup():
     Server.Connect('localhost', 8484)
     Drone.Connect('tcp:localhost:5763')
@@ -25,29 +26,34 @@ def setup():
     return
     
 def main():
-    rq = len(Drone.Mav_Message)
-    index = 0
-    Drone.Request(index)
     droneSend = s = time.time()
 
     th1 = Thread(target=Server.Receive, args=(Cmd,)) # 서버 데이터 수신
     th1.start() # 서버 데이터 수신
 
-    O_LastGps = None
+    Distance = [0 for i in range(7)]
+    O_newgps = [0, 0]
+    O_LastGps = [0, 0]
     movegps = [0, 0]
-    while True:
-        Distance = Video.Object_Dis(Status, Cmd) # 거리측정
-        O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
-        
-        # movegps[0] = (O_LastGps[0] - O_newgps[0]) + Status.NowLat
-        # movegps[1] = (O_LastGps[1] - O_newgps[1]) + Status.NowLon
 
-        num = Drone.Receive(Dron_data, Status) # 드론 데이터 수신
-        if num == index:
-            index = (index + 1) % rq
-            Drone.Request(index) # 드론 데이터 요청
+    while True:
+        if(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0):
+            Distance = Video.Object_Dis(Status, Cmd) # 거리측정
+            # print('Distance', Distance)
+            O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
+            # print('new', O_newgps)
+            if(O_LastGps != 0 and O_LastGps != 0):
+                movegps[0] = int(((O_LastGps[0] - O_newgps[0]) + (Status.NowLat * 10000000)))
+                movegps[1] = int(((O_LastGps[1] - O_newgps[1]) + (Status.NowLon * 10000000)))
+            # print('move',movegps)
+            # print(Distance[6], (O_LastGps[0] - O_newgps[0]) / 10000000.0, (O_LastGps[1] - O_newgps[1]) / 10000000.0)
+
+        Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if(time.time() - droneSend > 0.2):
-            Drone.Sendcommand(Cmd, Status, Distance[6], movegps) # 드론 데이터 전송
+            if(Distance[2] < RANGE and Distance[2] > RANGE and Distance[3] < RANGE and Distance[3] > RANGE):
+                pass
+            else:
+                Drone.Sendcommand(Cmd, Status, Distance, movegps) # 드론 데이터 전송
             droneSend = time.time()
             O_LastGps = O_newgps
     

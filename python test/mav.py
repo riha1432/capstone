@@ -1,6 +1,7 @@
 from pymavlink import mavutil
 from pymavlink.dialects.v20 import common
 import time
+import math
 
 mavlin = mavutil.mavlink_connection('tcp:localhost:5763')
 
@@ -37,17 +38,17 @@ while(True):
             lon = msg.lon
             # print(msg)
 
-            mavlin.mav.command_long_send(
-                target_system,
-                target_component,
-                common.MAV_CMD_CONDITION_YAW,
-                0,  # confirmation
-                270, 0, 0, 0, 0, 0, 0  # unused parameters
-            )
+            # mavlin.mav.command_long_send(
+            #     target_system,
+            #     target_component,
+            #     common.MAV_CMD_CONDITION_YAW,
+            #     0,  # confirmation
+            #     180, 0, 0, 0, 0, 0, 0  # unused parameters
+            # )
             
             time.sleep(1)
             mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
-                                                                                mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111111000), -353624074 - 10000, 1491627612 + 10, 20, 0.5,0.5,0, 0,0,0, 0,0))
+                                                                                mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b100111111000), -353623706 + 10000, 1491640311, 15, 0,0,0, 0,0,0, (math.pi * (45 / 180)), 0))
             
 # mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, target_system, target_component,
 #                                                                                 mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT, int(0b110111000111), lat + 100, lon + 100, 20, 0,0,0, 0,0,0, 0,0))
