@@ -5,8 +5,8 @@ def get_location_metres(original_location, Distance):
     earth_radius = 6378137.0 
 
     # Coordinate offsets in radians
-    dLat = Distance[4] / earth_radius
-    dLon = Distance[5] / (earth_radius * math.cos(math.pi * original_location.NowLat/180))
+    dLat = Distance[0] / earth_radius
+    dLon = Distance[1] / (earth_radius * math.cos(math.pi * original_location.NowLat/180))
 
     # New position in decimal degrees
     newlat = original_location.NowLat + (dLat * 180/math.pi)

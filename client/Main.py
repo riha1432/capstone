@@ -33,7 +33,7 @@ def main():
 
     Distance = [0 for i in range(7)]
     O_newgps = [0, 0]
-    O_LastGps = [0, 0]
+    O_45Gps = [0, 0]
     movegps = [0, 0]
 
     while True:
@@ -42,9 +42,14 @@ def main():
             # print('Distance', Distance)
             O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
             # print('new', O_newgps)
-            if(O_LastGps != 0 and O_LastGps != 0):
-                movegps[0] = int(((O_LastGps[0] - O_newgps[0]) + (Status.NowLat * 10000000)))
-                movegps[1] = int(((O_LastGps[1] - O_newgps[1]) + (Status.NowLon * 10000000)))
+
+            Compass = Video.Global_Gps_cam45(Status)
+            # print('Compass', Compass)
+            O_45Gps = Cv.get_location_metres(Status, Compass)
+            # print('O_45Gps', O_45Gps)
+
+            movegps[0] = int(((O_newgps[0] - O_45Gps[0]) + (Status.NowLat * 10000000)))
+            movegps[1] = int(((O_newgps[1] - O_45Gps[1]) + (Status.NowLon * 10000000)))
             # print('move',movegps)
             # print(Distance[6], (O_LastGps[0] - O_newgps[0]) / 10000000.0, (O_LastGps[1] - O_newgps[1]) / 10000000.0)
 
@@ -55,7 +60,6 @@ def main():
             else:
                 Drone.Sendcommand(Cmd, Status, Distance, movegps) # 드론 데이터 전송
             droneSend = time.time()
-            O_LastGps = O_newgps
     
         video = Video.VideoData() # 비디오 수신
 

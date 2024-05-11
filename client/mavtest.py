@@ -22,8 +22,8 @@ mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(1
 # status.Roll = self.msg.roll * (180/math.pi)
 #                 status.Pitch = self.msg.pitch * (180/math.pi)
 #                 status.Yaw = self.msg.yaw * (180/math.pi)
-# while True:
-#     Roll = vehicle.attitude.roll * (180/math.pi)
-#     Pitch = vehicle.attitude.pitch * (180/math.pi)
-#     Yaw = vehicle.attitude.yaw * (180/math.pi)
-#     print(Roll, Pitch, Yaw)
+while True:
+    Roll = vehicle.attitude.roll * (180/math.pi)
+    Pitch = vehicle.attitude.pitch * (180/math.pi)
+    Yaw = vehicle.attitude.yaw * (180/math.pi)
+    print(Roll, Pitch, Yaw)

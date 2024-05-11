@@ -81,7 +81,7 @@ class Video:
         videoHC = (self.MaxH / 2) - status.Pitch / pixelAngleH
         pixelAngleH = (cmd.videoObjectCenterH - videoHC) * pixelAngleH
         Cos_Distance = math.cos(math.pi * ((camAngle + pixelAngleH) / 180))
-        Cos_Distance = cmd.heigth / Cos_Distance
+        Cos_Distance = status.Alt / Cos_Distance
 
         pixelAngleW = (WANAGLE_VIEW / self.MaxW)
         pixelAngleW = (cmd.videoObjectCenterW - (640 / 2)) * pixelAngleW
@@ -100,4 +100,17 @@ class Video:
         if(Angle < 0):
             Angle = 360 + Angle
 
-        return [Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, dNorth, dEast, Angle]
+        return [dNorth, dEast, Object_Distance, Horizontal_Distance, pixelAngleH, pixelAngleW, Angle]
+    
+    def Global_Gps_cam45(self, status):
+        Cos_Distance = math.cos(math.pi * (45 / 180))
+        Cos_Distance = status.Alt / Cos_Distance
+        Horizontal_Distance = math.sin(math.pi * (45 / 180)) * Cos_Distance
+
+        dNorth = math.cos(math.pi * (status.Yaw / 180))
+        dNorth = dNorth * Horizontal_Distance
+        dEast = math.sin(math.pi * (status.Yaw / 180))
+        dEast = dEast * Horizontal_Distance
+
+        return [dNorth, dEast]
+
