@@ -7,6 +7,7 @@ import io
 import cv2
 import numpy as np
 from threading import Thread
+from ultralytics import YOLO
 import sys
 import time
 
@@ -19,6 +20,7 @@ print('소켓 생성')
 s.bind((HOST, PORT))
 s.listen(10)
 conn, addr = s.accept()
+Yolo_model = YOLO("yolov8n.pt")
 
 payload_size = struct.calcsize("L")
 
@@ -59,6 +61,7 @@ def Object_ID():
                 break
             elif(int(cmd[0]) == 1):
                 id = int(cmd[1])
+                print(id)
             elif(int(cmd[0]) == 2):
                 mode = int(cmd[1])
                 Send[16] = mode
@@ -92,6 +95,27 @@ while True:
     img_out = Image.open(io.BytesIO(imgdata))
     img_out = np.array(img_out)
     img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB)
-    a = cv2.resize(img_out, (720, 480))
-    cv2.imshow('server', a)
+    a = cv2.resize(img_out, (640, 480))
+    results = Yolo_model.track(a, persist=True, conf = 0.4, verbose=False)
+    video = results[0].plot()
+
+    # print(results[0].boxes.xyxy)
+    try:
+        for i in range(0, len(results[0].boxes.id)):
+            if(id == int(results[0].boxes.id[i])):
+                print(results[0].boxes.id[i])
+                print(results[0].boxes.xyxy[i])
+                videoObjectCenterH = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
+                videoObjectCenterW = int((results[0].boxes.xyxy[i][1] + results[0].boxes.xyxy[i][3]) / 2)
+                print(videoObjectCenterH, videoObjectCenterW)
+                Commend = 5
+                break
+        # print(results[0].boxes.xyxy[0])
+        # print(1 in results[0].boxes.id)
+        # print(int(results[0].boxes.id[0]))
+    except:
+        pass
+    # print(results[0].boxes.id)
+    # print(results[0])
+    cv2.imshow('server', video)
     cv2.waitKey(1)

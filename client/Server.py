@@ -1,5 +1,6 @@
 import socket
 from Error import Error
+import time
 
 REQUEST_DATA = 20
 
@@ -11,13 +12,15 @@ class Socket:
     def __uint7(self, val, bit):
         return val<<bit
     
-    def Connect(self, ip, port):
+    def Connect(self, ip, port): 
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            self.socket.connect((ip, port))
-            print("connect to server")
-        except:
-            Error(1)
+        while True:
+            try:
+                self.socket.connect((ip, port))
+                print("connect to server")
+                break
+            except:
+                pass
         return
     
     def Close(self):
