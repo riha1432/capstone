@@ -31,8 +31,8 @@ mode = 0
 pixelH = 0
 pixelW = 0
 
-videoObjectCenterH = 300
-videoObjectCenterW = 640
+videoObjectCenterH = 0
+videoObjectCenterW = 0
 Commend = 0
 CommendLat = 0
 CommendLon = 0
@@ -40,14 +40,6 @@ heigth = 10
 
 def uint7(val, bit):
         return val>>bit & 0X0000007F
-
-Send[0] = uint7(int(videoObjectCenterH), 7)
-Send[1] = uint7(int(videoObjectCenterH), 0)
-Send[2] = uint7(int(videoObjectCenterW), 7)
-Send[3] = uint7(int(videoObjectCenterW), 0)
-Send[14] = uint7(int(videoObjectCenterW), 7)
-Send[15] = uint7(int(videoObjectCenterW), 0)
-
 
 def Object_ID():
     global end, id, mode
@@ -67,6 +59,8 @@ def Object_ID():
                 Send[16] = mode
                 conn.send(Send)
         except:
+            
+            conn.send(Send)
             pass
         print(Send)
 
@@ -96,23 +90,30 @@ while True:
     img_out = np.array(img_out)
     img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB)
     a = cv2.resize(img_out, (640, 480))
-    results = Yolo_model.track(a, persist=True, conf = 0.4, verbose=False)
+    results = Yolo_model.track(a, persist=True, conf = 0.4, verbose=False, vid_stride = 2)
     video = results[0].plot()
 
     # print(results[0].boxes.xyxy)
     try:
         for i in range(0, len(results[0].boxes.id)):
             if(id == int(results[0].boxes.id[i])):
-                print(results[0].boxes.id[i])
-                print(results[0].boxes.xyxy[i])
-                videoObjectCenterH = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
-                videoObjectCenterW = int((results[0].boxes.xyxy[i][1] + results[0].boxes.xyxy[i][3]) / 2)
-                print(videoObjectCenterH, videoObjectCenterW)
+                print(results[0].boxes.xyxy)
+                videoObjectCenterH = int((results[0].boxes.xyxy[i][1] + results[0].boxes.xyxy[i][3]) / 2)
+                videoObjectCenterW = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
+                # videoObjectCenterH = 1
+                # videoObjectCenterW = 320
                 Commend = 5
                 break
-        # print(results[0].boxes.xyxy[0])
-        # print(1 in results[0].boxes.id)
-        # print(int(results[0].boxes.id[0]))
+        
+        # print(videoObjectCenterH)
+        # print(videoObjectCenterW)
+        Send[0] = uint7(int(videoObjectCenterH), 7)
+        Send[1] = uint7(int(videoObjectCenterH), 0)
+        Send[2] = uint7(int(videoObjectCenterW), 7)
+        Send[3] = uint7(int(videoObjectCenterW), 0)
+        Send[16] = Commend
+
+        conn.send(Send)
     except:
         pass
     # print(results[0].boxes.id)

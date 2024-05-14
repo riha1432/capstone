@@ -8,7 +8,7 @@ from Error import Error
 WIDTH = 3
 HEIGHT = 4
 camAngle = 45
-WANAGLE_VIEW = 75
+WANAGLE_VIEW = 72
 HANAGLE_VIEW = 42
 
 class Video:
@@ -78,8 +78,10 @@ class Video:
     
     def Object_Dis(self, status ,cmd):
         pixelAngleH = (HANAGLE_VIEW / self.MaxH)
-        videoHC = (self.MaxH / 2) - status.Pitch / pixelAngleH
-        pixelAngleH = (cmd.videoObjectCenterH - videoHC) * pixelAngleH
+        videoHC = (self.MaxH / 2) + (status.Pitch / pixelAngleH)
+        pixelAngleH = (videoHC - cmd.videoObjectCenterH) * pixelAngleH
+        # print('videoHC : ', videoHC , 'pixelAngleH : ', pixelAngleH, 'cmd.videoObjectCenterH : ',cmd.videoObjectCenterH)
+
         Cos_Distance = math.cos(math.pi * ((camAngle + pixelAngleH) / 180))
         Cos_Distance = status.Alt / Cos_Distance
 

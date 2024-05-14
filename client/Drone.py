@@ -125,17 +125,6 @@ class Mavlink:
                     (math.pi * (Angle[6] / 180)), 0
                 )
                 self.vehicle.send_mavlink(msg)
-                # self.mavlin.mav.command_long_send(
-                #     self.target_system,
-                #     self.target_component,
-                #     common.MAV_CMD_CONDITION_YAW,
-                #     0,  # confirmation
-                #     Angle[6], 0, 0, 0, 0, 0, 0  # unused parameters
-                # )
-
-                # self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
-                #                                                                 mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b100111111000), 
-                #                                                                 O_newgps[0], O_newgps[1], 15, 0,0,0, 0,0,0, (math.pi * (Angle[6] / 180)),0))
             
         return
     
