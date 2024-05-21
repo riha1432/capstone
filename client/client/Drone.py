@@ -125,7 +125,8 @@ class Mavlink:
                     (math.pi * (Angle[6] / 180)), 0
                 )
                 self.vehicle.send_mavlink(msg)
-            
+
+        Cmd.Commend = 0
         return
     
 class Status:
@@ -147,16 +148,3 @@ class Commend:
         self.CommendLat = 0
         self.CommendLon = 0
         self.heigth = 10
-
-    # def __uint7(self, val, bit):
-    #     return val<<bit
-    
-    # def setdata(self, Server_data):
-    #     self.videoObjectCenterH = self.__uint7(Server_data[0], 7) | Server_data[1]
-    #     self.videoObjectCenterW = self.__uint7(Server_data[2], 7) | Server_data[3]
-    #     self.CommendLat = ( self.__uint7(Server_data[4], 28) | self.__uint7(Server_data[5], 21) | 
-    #                     self.__uint7(Server_data[6], 14) | self.__uint7(Server_data[7], 7) | Server_data[8] )
-    #     self.CommendLon = ( self.__uint7(Server_data[9], 28) | self.__uint7(Server_data[10], 21) | 
-    #                     self.__uint7(Server_data[11], 14) | self.__uint7(Server_data[12], 7) | Server_data[13] )
-    #     self.Height = self.__uint7(Server_data[14], 7) | Server_data[15]
-    #     self.Commend = Server_data[16]

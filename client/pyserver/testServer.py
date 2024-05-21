@@ -59,9 +59,9 @@ def Object_ID():
                 Send[16] = mode
                 conn.send(Send)
         except:
-            
             conn.send(Send)
             pass
+        
         print(Send)
 
 

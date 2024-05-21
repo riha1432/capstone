@@ -56,12 +56,13 @@ def main():
         Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if(time.time() - droneSend > 0.5):
             print(Distance[4] , Distance[5])
-            if(Distance[4] < RANGE and Distance[4] > -RANGE and Distance[5] < RANGE / 2 and Distance[5] > -RANGE / 2 ):
+            if(Distance[4] == 0 and Distance[5] == 0):
+                Drone.Sendcommand(Cmd, Status, Distance, movegps) # 드론 데이터 전송
+            elif(Distance[4] > RANGE and Distance[4] < -RANGE and Distance[5] < RANGE / 2 and Distance[5] > -RANGE / 2):
                 pass
             else:
-                # print("drone send")
                 Drone.Sendcommand(Cmd, Status, Distance, movegps) # 드론 데이터 전송
-                pass
+
             droneSend = time.time()
     
         video = Video.VideoData() # 비디오 수신
