@@ -11,7 +11,7 @@ from ultralytics import YOLO
 import sys
 import time
 
-HOST = 'localhost'
+HOST = '0.0.0.0'
 PORT = 8484
 Send = bytearray(20)
 
@@ -68,55 +68,66 @@ def Object_ID():
 th1 = Thread(target=Object_ID, args=()) # 서버 데이터 수신
 th1.start() # 서버 데이터 수신
 
+prevate = 0
+bata = b''
 while True:
-    bata = b''
     if(end == 1):
         exit()
-    while True:
-        re = conn.recv(4096)
-        if(re.endswith(b'_E_')):
-            bata += re
-            break
-        else:
-            bata += re
-    
+    re = conn.recv(4096)
+    d = re.split(b'_E_')
+    if(len(d) == 1):
+        bata += d[0]
+    else:
+        bata += d[0]
+        data = bata.split(b'_D_')
+        img = data[0]
+        data = data[1]
+        imgdata = base64.b64decode(img)
+        img_out = Image.open(io.BytesIO(imgdata))
+        img_out = np.array(img_out)
+        img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB)
+        video = cv2.resize(img_out, (640, 480))
 
-    data = bata.split(b'_D_')
-    img = data[0]
-    data = data[1]
+        if(prevate == 4):
+            prevate = 0
+            results = Yolo_model.track(video, persist=True, conf = 0.4, verbose = False, vid_stride = 1)
+            video = results[0].plot()
+            try:
+                for i in range(0, len(results[0].boxes.id)):
+                    if(id == int(results[0].boxes.id[i])):
+                        print(results[0].boxes.xyxy)
+                        videoObjectCenterH = int((results[0].boxes.xyxy[i][1] + results[0].boxes.xyxy[i][3]) / 2)
+                        videoObjectCenterW = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
+                        Commend = 5
+                        break
+                
+                if(id == 0):
+                    videoObjectCenterH = 0
+                    videoObjectCenterW = 0
+                    Commend = 0
+                    
+                Send[0] = uint7(int(videoObjectCenterH), 7)
+                Send[1] = uint7(int(videoObjectCenterH), 0)
+                Send[2] = uint7(int(videoObjectCenterW), 7)
+                Send[3] = uint7(int(videoObjectCenterW), 0)
+                Send[16] = Commend
+                conn.send(Send)
+            except:
+                videoObjectCenterH = 0
+                videoObjectCenterW = 0
+                Commend = 0
+                Send[0] = 0
+                Send[1] = 0
+                Send[2] = 0
+                Send[3] = 0
+                Send[16] = Commend
+                conn.send(Send)
+                pass
 
-    imgdata = base64.b64decode(img)
-    img_out = Image.open(io.BytesIO(imgdata))
-    img_out = np.array(img_out)
-    img_out = cv2.cvtColor(img_out, cv2.COLOR_BGR2RGB)
-    a = cv2.resize(img_out, (640, 480))
-    results = Yolo_model.track(a, persist=True, conf = 0.4, verbose=False, vid_stride = 2)
-    video = results[0].plot()
+            cv2.imshow('server', video)
+            cv2.waitKey(1)
 
-    # print(results[0].boxes.xyxy)
-    try:
-        for i in range(0, len(results[0].boxes.id)):
-            if(id == int(results[0].boxes.id[i])):
-                print(results[0].boxes.xyxy)
-                videoObjectCenterH = int((results[0].boxes.xyxy[i][1] + results[0].boxes.xyxy[i][3]) / 2)
-                videoObjectCenterW = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
-                # videoObjectCenterH = 1
-                # videoObjectCenterW = 320
-                Commend = 5
-                break
+        prevate += 1
+        bata = d[1]
+        # print(results[0].boxes.xyxy)
         
-        # print(videoObjectCenterH)
-        # print(videoObjectCenterW)
-        Send[0] = uint7(int(videoObjectCenterH), 7)
-        Send[1] = uint7(int(videoObjectCenterH), 0)
-        Send[2] = uint7(int(videoObjectCenterW), 7)
-        Send[3] = uint7(int(videoObjectCenterW), 0)
-        Send[16] = Commend
-
-        conn.send(Send)
-    except:
-        pass
-    # print(results[0].boxes.id)
-    # print(results[0])
-    cv2.imshow('server', video)
-    cv2.waitKey(1)
