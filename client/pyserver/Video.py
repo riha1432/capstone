@@ -31,7 +31,7 @@ class Video:
                     cmd.Wcenter = int((results[0].boxes.xyxy[i][0] + results[0].boxes.xyxy[i][2]) / 2)
                     cmd.mode = 5
                     break
-            if(id == 0):
+            if(cmd.id == 0):
                 cmd.Hcenter = 0
                 cmd.Wcenter = 0
                 cmd.mode = 0
