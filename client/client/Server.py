@@ -34,10 +34,7 @@ class Socket:
     def Receive(self, Cmd):
         print('thread')
         while True:
-            # print('<<', end=' ')
             self.Server_data = self.socket.recv(20)
-            # print(self.Server_data)
-            # print('>>')
             Cmd.videoObjectCenterH = self.__uint7(self.Server_data[0], 7) | self.Server_data[1]
             Cmd.videoObjectCenterW = self.__uint7(self.Server_data[2], 7) | self.Server_data[3]
             Cmd.CommendLat = ( self.__uint7(self.Server_data[4], 28) | self.__uint7(self.Server_data[5], 21) | 

@@ -18,9 +18,11 @@ Server_data=bytearray(Sm.REQUEST_DATA)
 ANGLE_VIEW = 54
 RANGE = 10
 def setup():
-    Server.Connect('localhost', 8484)
-    Drone.Connect('tcp:localhost:5763')
+    # Server.Connect('localhost', 8484)
+    # Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
+    Server.Connect('192.168.137.1', 8484)
+    Drone.Connect('/dev/ttyS0', 57600)
     Video.Connect(0)
     Video.VidoeSetup(640,480,30)
     return
@@ -39,19 +41,13 @@ def main():
     while True:
         if(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0):
             Distance = Video.Object_Dis(Status, Cmd) # 거리측정
-            # print('Distance', Distance)
             O_newgps = Cv.get_location_metres(Status, Distance) # 객채 gps 좌표값
-            # print('new', O_newgps)
 
             Compass = Video.Global_Gps_cam45(Status)
-            # print('Compass', Compass)
             O_45Gps = Cv.get_location_metres(Status, Compass)
-            # print('O_45Gps', O_45Gps)
 
             movegps[0] = int(((O_newgps[0] - O_45Gps[0]) + (Status.NowLat * 10000000)))
             movegps[1] = int(((O_newgps[1] - O_45Gps[1]) + (Status.NowLon * 10000000)))
-            # print('move',movegps)
-            # print(Distance[6], (O_LastGps[0] - O_newgps[0]) / 10000000.0, (O_LastGps[1] - O_newgps[1]) / 10000000.0)
 
         Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if(time.time() - droneSend > 0.5):
