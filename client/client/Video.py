@@ -8,8 +8,8 @@ from Error import Error
 WIDTH = 3
 HEIGHT = 4
 camAngle = 45
-WANAGLE_VIEW = 72
-HANAGLE_VIEW = 42
+WANAGLE_VIEW = 72 # 150
+HANAGLE_VIEW = 42 # 130
 
 class Video:
     def __init__(self, quality = 95):

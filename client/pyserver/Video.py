@@ -20,7 +20,7 @@ class Video:
         video = cv2.resize(img_out, (640, 480))
         return video
 
-    def Object_track(self, video, cmd):
+    def Object_track(self, video, cmd, socket, data):
         results = self.AI_model.track(video, persist=True, conf = 0.4, verbose = False, vid_stride = 1)
         video = results[0].plot()
         try:
@@ -35,10 +35,12 @@ class Video:
                 cmd.Hcenter = 0
                 cmd.Wcenter = 0
                 cmd.mode = 0
+
         except:
             cmd.Hcenter = 0
             cmd.Wcenter = 0
             cmd.mode = 0
-
+            
+        socket.Server_Send(data, cmd)
         cv2.imshow('server', video)
         cv2.waitKey(1)
