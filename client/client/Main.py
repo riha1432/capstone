@@ -18,11 +18,11 @@ Server_data=bytearray(Sm.REQUEST_DATA)
 ANGLE_VIEW = 54
 RANGE = 10
 def setup():
-    # Server.Connect('localhost', 8484)
-    # Drone.Connect('tcp:localhost:5763')
+    Server.Connect('localhost', 8484)
+    Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
-    Server.Connect('192.168.137.1', 8484)
-    Drone.Connect('/dev/ttyS0', 57600)
+    # Server.Connect('192.168.137.1', 8484)
+    # Drone.Connect('/dev/ttyS0', 57600)
     Video.Connect(0)
     Video.VidoeSetup(640,480,30)
     return
@@ -51,7 +51,7 @@ def main():
 
         Drone.Receive(Dron_data, Status) # 드론 데이터 수신
         if(time.time() - droneSend > 0.5):
-            print(Distance[4] , Distance[5])
+            # print(Distance[4] , Distance[5])
             if(Distance[4] == 0 and Distance[5] == 0):
                 Drone.Sendcommand(Cmd, Status, Distance, movegps) # 드론 데이터 전송
             elif(Distance[4] > RANGE and Distance[4] < -RANGE and Distance[5] < RANGE / 2 and Distance[5] > -RANGE / 2):

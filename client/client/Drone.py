@@ -92,9 +92,9 @@ class Mavlink:
             self.vehicle.simple_takeoff(15)
 
             
-        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5): # 이동
-            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
-                                                                             mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
+        # elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5): # 이동
+        #     self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+        #                                                                      mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
         
         elif(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0 and Cmd.Commend == 5):
             if(O_newgps[0] != 0 and O_newgps[1] != 0):
