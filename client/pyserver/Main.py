@@ -3,7 +3,7 @@ import CmdInput
 import Server
 import Video
 
-FRAMECHECK = 8
+FRAMECHECK = 5
 frame = 0
 
 Send = bytearray(20)

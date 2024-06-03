@@ -20,7 +20,7 @@ class Server:
 
     def Reception(self):
         while True:
-            re = self.conn.recv(4096)
+            re = self.conn.recv(65536)
             Split = re.split(b'_E_')
             if(len(Split) == 1):
                 self.data += Split[0]

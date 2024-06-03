@@ -18,10 +18,10 @@ Server_data=bytearray(Sm.REQUEST_DATA)
 ANGLE_VIEW = 54
 RANGE = 10
 def setup():
-    Server.Connect('localhost', 8484)
+    Server.Connect('58.237.187.59', 8484)
     Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
-    # Server.Connect('192.168.137.1', 8484)
+    # Server.Connect('localhost', 8484)
     # Drone.Connect('/dev/ttyS0', 57600)
     Video.Connect(0)
     Video.VidoeSetup(640,480,30)
@@ -30,7 +30,7 @@ def setup():
 def main():
     droneSend = s = time.time()
 
-    th1 = Thread(target=Server.Receive, args=(Cmd,)) # 서버 데이터 수신
+    th1 = Thread(target=Server.Receive, args=(Cmd, Drone, )) # 서버 데이터 수신
     th1.start() # 서버 데이터 수신
 
     Distance = [0 for i in range(7)]

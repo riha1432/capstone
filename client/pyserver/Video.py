@@ -13,6 +13,7 @@ class Video:
         self.video = None
 
     def input(self, img):
+        # imgdata = img
         imgdata = base64.b64decode(img)
         img_out = Image.open(io.BytesIO(imgdata))
         img_out = np.array(img_out)
@@ -21,7 +22,7 @@ class Video:
         return video
 
     def Object_track(self, video, cmd, socket, data):
-        results = self.AI_model.track(video, persist=True, conf = 0.4, verbose = False, vid_stride = 1)
+        results = self.AI_model.track(video, persist=True, conf = 0.25, verbose = False, vid_stride = 1)
         video = results[0].plot()
         try:
             for i in range(0, len(results[0].boxes.id)):
