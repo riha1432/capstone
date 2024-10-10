@@ -91,7 +91,7 @@ class Mavlink:
 
         elif(Cmd.Commend == 1): # 이륙
             print('이륙')
-            self.vehicle.simple_takeoff(15)
+            self.vehicle.simple_takeoff(4)
 
     def Sendcommand(self, Cmd, status, Angle, O_newgps):
         # print(Cmd.Commend)
@@ -120,7 +120,7 @@ class Mavlink:
                     0, 0,    # target system, target component
                     mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, # frame
                     int(0b100111111000), # type_mask (only speeds enabled)
-                    O_newgps[0], O_newgps[1], 15,
+                    O_newgps[0], O_newgps[1], 4,
                     0, # X velocity in NED frame in m/s
                     0, # Y velocity in NED frame in m/s
                     0, # Z velocity in NED frame in m/s
