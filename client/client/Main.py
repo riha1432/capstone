@@ -19,10 +19,10 @@ ANGLE_VIEW = 54
 RANGE = 10
 def setup():
     Server.Connect('58.237.187.59', 8484)
-    Drone.Connect('tcp:localhost:5763')
+    # Drone.Connect('tcp:localhost:5763')
     # Drone.Connect('COM9', 57600)
     # Server.Connect('localhost', 8484)
-    # Drone.Connect('/dev/ttyS0', 57600)
+    Drone.Connect('/dev/ttyS0', 57600)
     Video.Connect(0)
     Video.VidoeSetup(640,480,30)
     return
