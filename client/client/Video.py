@@ -47,6 +47,7 @@ class Video:
 
     def __video(self):
         self.ret, self.frame =  self.cam.read()
+        
         # if not self.ret:
         #     return None
         # if cv2.waitKey(1) & 0xFF == ord('q'):
