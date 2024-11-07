@@ -76,12 +76,13 @@ class Mavlink:
         
         return 0
     
-    def Sendcommand(self, Cmd, status, Angle, O_newgps):
-
+    def SetMode(self, Cmd):
         if(Cmd.Commend == 4): # 시동
+            print('시동')
             self.vehicle.armed = True
 
         elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 3):
+            print('가이드 모드')
             self.vehicle.mode = VehicleMode("GUIDED")  # 가이드 모드
 
         elif(Cmd.Commend == 2):
@@ -89,14 +90,16 @@ class Mavlink:
             self.vehicle.mode = VehicleMode("RTL") # 복귀
 
         elif(Cmd.Commend == 1): # 이륙
-            self.vehicle.simple_takeoff(15)
+            print('이륙')
+            self.vehicle.simple_takeoff(4)
 
-            
-        elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5): # 이동
-            self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
-                                                                             mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
+    def Sendcommand(self, Cmd, status, Angle, O_newgps):
+        # print(Cmd.Commend)
+        # elif(Cmd.videoObjectCenterH == 0 and Cmd.videoObjectCenterW == 0 and Cmd.Commend == 5): # 이동
+        #     self.mavlin.mav.send(mavutil.mavlink.MAVLink_set_position_target_global_int_message(10, self.target_system, self.target_component,
+        #                                                                      mavutil.mavlink.MAV_FRAME_GLOBAL_TERRAIN_ALT_INT , int(0b110111111000),  Cmd.CommendLat, Cmd.CommendLon, 15, 0,0,0, 0,0,0, 0,0))
         
-        elif(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0 and Cmd.Commend == 5):
+        if(Cmd.videoObjectCenterH != 0 and Cmd.videoObjectCenterW != 0 and Cmd.Commend == 5):
             if(O_newgps[0] != 0 and O_newgps[1] != 0):
                 if(Angle[2] < 0):
                     Angle[6] -= 180
@@ -117,7 +120,7 @@ class Mavlink:
                     0, 0,    # target system, target component
                     mavutil.mavlink.MAV_FRAME_GLOBAL_RELATIVE_ALT_INT, # frame
                     int(0b100111111000), # type_mask (only speeds enabled)
-                    O_newgps[0], O_newgps[1], 15,
+                    O_newgps[0], O_newgps[1], 4,
                     0, # X velocity in NED frame in m/s
                     0, # Y velocity in NED frame in m/s
                     0, # Z velocity in NED frame in m/s
@@ -125,8 +128,6 @@ class Mavlink:
                     (math.pi * (Angle[6] / 180)), 0
                 )
                 self.vehicle.send_mavlink(msg)
-
-        Cmd.Commend = 0
         return
     
 class Status:

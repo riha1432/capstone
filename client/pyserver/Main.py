@@ -3,7 +3,7 @@ import CmdInput
 import Server
 import Video
 
-FRAMECHECK = 10
+FRAMECHECK = 5
 frame = 0
 
 Send = bytearray(20)
@@ -12,8 +12,8 @@ socket = Server.Server()
 Cmd = CmdInput.cmd()
 video = Video.Video("yolov8n.pt")
 
-socket.Produce('0.0.0.0', 8484, 10)
 
+socket.Produce('0.0.0.0', 8484, 10)
 def Object_ID():
     while True:
         print('0종료/1객체 번호/2모드 ( 입력 형식 : x y): ', end = '')
@@ -28,6 +28,7 @@ def Object_ID():
             elif(int(cmd[0]) == 2):
                 Cmd.mode = int(cmd[1])
                 Send[16] = Cmd.mode
+                socket.conn.send(Send)
         except:
             print('err')
         print(Send)
@@ -40,6 +41,6 @@ while True:
     if(frame >= FRAMECHECK):
         frame = 0
         video_data = video.input(img)
-        video.Object_track(video_data, Cmd)
-        socket.Server_Send(Send, Cmd)
+        video.Object_track(video_data, Cmd, socket, Send)
+        # socket.Server_Send(Send, Cmd)
     frame += 1

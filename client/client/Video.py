@@ -2,17 +2,19 @@ import cv2
 import base64
 import numpy as np
 import math
+import sys
 # from matplotlib import pyplot as plt
 from Error import Error
+import time
 
 WIDTH = 3
 HEIGHT = 4
 camAngle = 45
-WANAGLE_VIEW = 72
-HANAGLE_VIEW = 42
+WANAGLE_VIEW = 100
+HANAGLE_VIEW = 90
 
 class Video:
-    def __init__(self, quality = 95):
+    def __init__(self, quality = 90):
         self.cam = None 
         self.encode_param = [int(cv2.IMWRITE_JPEG_QUALITY), quality]
         self.ret = None
@@ -21,6 +23,7 @@ class Video:
         self.imgR = None
         self.MaxH = 0
         self.MaxW = 0
+        self.buffer = None
 
     def Connect(self, port):
         self.cam = cv2.VideoCapture(port)
@@ -46,28 +49,29 @@ class Video:
         return
 
     def __video(self):
-        self.ret, self.frame =  self.cam.read()
-        
-        # if not self.ret:
-        #     return None
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     return None
-        # cv2.imshow('frame',self.frame)
-        return
+        try:
+            self.ret, self.frame =  self.cam.read()
+            # if not self.ret:
+            #     return None
+            # if cv2.waitKey(1) & 0xFF == ord('q'):
+            #     return None
+            # cv2.imshow('frame',self.frame)
+            return
+        except:
+            print("video err")
     
     def VideoData(self):
         self.__video()
-
-        ret, buffer = cv2.imencode('.jpg', self.frame, self.encode_param)
+        # int("un압축 : ",sys.getsizeof(self.frame))
+        try:
+            ret, self.buffer = cv2.imencode('.jpg', self.frame, self.encode_param)
+            # print(len(self.buffer))
+            data = base64.b64encode(self.buffer)
+            return data
+        except :
+            print("jpg err")
+            return b''
         
-        if not ret:
-            return None
-
-        data = base64.b64encode(buffer)
-        # cv2.imshow('a', buffer)
-        # cv2.imwrite('./output.png', img_out)
-        return data
-    
     # def Stereo(self, x, y):
     #     self.imgL = cv2.cvtColor(self.frame[ : , :640], cv2.COLOR_BGR2GARY)
     #     self.imgR = cv2.cvtColor(self.frame[ : , 640:], cv2.COLOR_BGR2GARY)
