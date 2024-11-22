@@ -34,9 +34,11 @@ class DRONE:
         self.status.Pitch = self.vehicle.attitude.pitch * (180/math.pi)
         self.status.Yaw = self.vehicle.attitude.yaw * (180/math.pi)
         self.status.NowLat = self.vehicle.location.global_frame.lat
-        self. status.NowLon = self.vehicle.location.global_frame.lon
+        self.status.NowLon = self.vehicle.location.global_frame.lon
         self.status.Alt = int(self.vehicle.location.global_relative_frame.alt)
         self.status.speed = int(math.sqrt(math.pow(self.vehicle.velocity[0], 2) + math.pow(self.vehicle.velocity[1], 2)))
         self.status.Bettery = int(self.vehicle.battery.voltage * 10)
 
         return self.status
+    
+    
