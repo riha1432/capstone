@@ -2,6 +2,9 @@ import ray
 import asyncio
 import Parallel_Processing as parallel
 
+LEFT_RIGHT_ANGLE_OF_VIEW = 100
+UP_DOWN_ANGLE_OF_VIEW = 90
+
 ray.init(num_cpus = 8)
 
 

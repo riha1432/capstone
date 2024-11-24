@@ -11,7 +11,7 @@ class Status:
         self.NowLat = 0
         self.Alt = 0
         self.speed = 0
-        self.Data = [reset for reset in range(20)]
+        self.Data = [0 for _ in range(20)]
 
     def class_to_array(self) -> np.ndarray:
         send = int(self.NowLat * 10000000)

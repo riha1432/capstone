@@ -8,7 +8,7 @@ from pymavlink.dialects.v20 import common
 import Lib.Status as STATUS
 
 @ray.remote
-class DRONE:
+class Drone:
     def __init__(self):
         self.ID : int = 0
         self.Target_System: int = 0
@@ -16,13 +16,16 @@ class DRONE:
         self.vehicle = None
         self.status: STATUS.Status = STATUS.Status()
 
-    def connect(self, address, id = 0) -> bool:
+    def connect(self, address, baud = 0) -> bool:
         self.ID = id
 
         print("========Drone connecting========")
         while True:
             try:
-                self.vehicle = connect(address, wait_ready=True)
+                if(baud == 0):
+                    self.vehicle = connect(address, wait_ready=True)
+                else:
+                    self.vehicle = connect(address, baud=baud, wait_ready=True)
                 print("       Drone connection complete       ")
                 return 1
             except:

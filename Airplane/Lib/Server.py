@@ -6,7 +6,7 @@ import numpy as np
 import Lib.Commend as CMD
 
 @ray.remote
-class SERVER:
+class Server:
     def __init__(self):
         self.socket: socket = None
         self.rece_data: list[] = []
@@ -38,7 +38,7 @@ class SERVER:
 
     def Receive(self) -> list:
         self.Server_data = self.socket.recv(20)
-        # 
+        
         return self.Server_data
 
         
