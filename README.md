@@ -49,7 +49,7 @@
     - 객체의 픽셀 위치를 기반으로 카메라 광학축과의 사잇각 산출.
 2.  **기하학적 거리 측정**:
     - 드론의 현재 피치(Pitch)와 카메라 마운트 각도를 고려하여 지면까지의 직선 거리($D$) 계산.
-    - $D = Height / \cos(\text{Camera\_Angle} + \text{Pixel\_Angle})$
+    - $D = Height / \cos(\text{Camera\Angle} + \text{Pixel\Angle})$
 3.  **GPS 좌표 변환 (WGS84)**:
     - 산출된 수평 거리와 드론의 현재 기수(Yaw)를 기반으로 북방(dNorth) 및 동방(dEast) 오프셋 계산.
     - $newLat = currentLat + (dNorth / R_{earth}) \times (180/\pi)$
